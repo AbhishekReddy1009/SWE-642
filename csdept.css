@@ -1,0 +1,36 @@
+.heading {
+  font-family: serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: solid;
+	height:150px;
+  background: #006633;
+  border-color: #006633;
+  box-shadow: 2px 5px 10px black;
+}
+
+.body{
+  padding: 40px;
+  background: lightgray;
+  font-family: sans-serif;
+  color: black
+}
+
+table, th, td{border: solid;
+}
+
+.survey{
+  position: relative;
+  border: solid;
+  height: 50px;
+  background: #FFCC33;
+  width : 95%;
+  display: inline-block;
+}
+
+.logo{
+  position:fixed;
+    right:10px;
+    bottom: 10px
+}

@@ -1,0 +1,333 @@
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="form.css">
+		<link rel="stylesheet" href="jquery-ui.css">
+		<script src="jquery.validate.js"></script>
+		<script src="jquery.min.js"></script>
+		<script src="jquery-1.12.4.js"></script>
+
+
+<!-- cookies -->
+		<script type="text/javascript">
+		function getCookie(name) {
+  let cookie = {};
+  document.cookie.split(';').forEach(function(el) {
+    let [k,v] = el.split('=');
+    cookie[k.trim()] = v;
+  })
+  return cookie[name];
+}
+		function prompt_name() {
+			var check_name = window.prompt("Please Enter your Name", "Abhishek Reddy");
+			if (check_name == undefined || check_name == ''){
+				return prompt_name();
+			}else{
+				return check_name;
+
+			}
+
+		}
+			var time = new Date();
+			  var hour = time.getHours();
+			  var name;
+			  if(hour < 12)
+			    document.write("<h2>Good Morning ");
+			  else{
+			    hour = hour - 12;
+			    if (hour < 6)
+			      document.write("<h2>Good Afternoon ");
+			    else
+			      document.write("<h2>Good Evening ");
+			    }
+					let storedName = getCookie("name")
+					if(storedName != null && storedName != undefined && storedName != "null"){
+						name = decodeURIComponent(storedName)
+					}else{
+						name = prompt_name();
+						document.cookie = "name="+ escape(name);
+					}
+
+			    document.writeln(name + " ,Welcome to SWE642 Survey</h3>");
+			    document.writeln("<a href = 'javascript:wrongPerson()'> " + "Click here, if you are not "+ name + "</a>");
+			    function wrongPerson(){
+			      document.cookie = "name = null;" + "expires=Mon, 05-Sep-24 00:00:01 GMT";
+			      location.reload();
+			    }
+
+					// function for zip
+			function zipCode(code){
+				     try{
+						$.get("zip.json", function(data, status){
+				                let flag=0;
+								for(let col of data.zipcodes){
+				                    if(col.zip == code){
+				                        flag=1;
+				                        document.getElementById('city').innerHTML  = col.city;
+				                        document.getElementById('state').innerHTML  = col.state;
+				                        document.getElementById('zip_error').innerHTML = '';
+				                    }
+				                }
+				                if(flag == 0)
+				                    document.getElementById('zip_error').innerHTML = "<spam style= 'color: red;'> Invalid ZipCode <spam>";
+			  			});
+				     }
+				     catch(exception){
+				        alert("Request Failed");
+				     }
+				 }
+
+		// function for form validation
+
+
+			 function formValidation()
+			    {
+			    var errorMessage = "";
+			    var name = document.forms["aform"]["name"];
+			    var address = document.forms["aform"]["address"];
+			    var zip = document.forms["aform"]["zip"];
+			    var email = document.forms["aform"]["email"];
+
+			    if(!name.value.match(/^[a-zA-Z]+$/)){
+			    errorMessage = errorMessage + "Name text box should contain only Alphabets.<br> "
+			    name.focus();
+			    name.value = "";
+			    }
+
+			    if(!address.value.match(/^[a-zA-Z0-9]+$/)){
+			    errorMessage =  errorMessage + "Address text boxes should contain only appropriate numeric, alphabet or alphanumeric characters.<br>"
+			    address.focus();
+			    address.value = "";
+			    }
+
+			    if(!zip.value.match(/^[0-9]+$/)){
+			    errorMessage = errorMessage + "ZIP code must have numeric characters only.<br>"
+			    zip.focus();
+			    zip.value = "";
+			    }
+
+			    if(!email.value.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)){
+			    errorMessage = errorMessage + "Email Address should be valid.<br>"
+			    email.focus();
+			    email.value = "";
+			    }
+			    function checkbox(checkboxName) {
+			        var checkboxes = document.querySelectorAll('input[name="' + checkboxName + '"]:checked'), values = [];
+			        Array.prototype.forEach.call(checkboxes, function(el) {
+			            values.push(el.value);
+			        });
+			        return values;
+			    }
+
+			    if(checkbox("no").length < 2){
+			    errorMessage = errorMessage + "Make sure at least two checkboxes are checked.<br>"
+			    }
+
+			    function checked(name) {
+			                var ele = document.getElementsByName(name);
+			                for(i = 0; i < ele.length; i++) {
+			                    if(ele[i].checked)
+			                    return true;
+			                }
+			            }
+
+			    if(!checked("Num")){
+			    errorMessage = errorMessage + "Make sure a radio button option is selected.<br>"
+			    }
+
+
+			    if(errorMessage != "")
+			    {
+			      var modal = document.getElementById("myModal");
+			      modal.style.display = "block";
+			      document.getElementById("error_msg").innerHTML = errorMessage;
+			    }
+			    else
+			    {
+			      alert("Thanks for your Feedback!");
+			      window.location.replace("index.html");
+			    }
+			    }
+
+			    function avgAndmax() {
+      var input = document.getElementById("input").value
+      var array=input.split(",");
+      var arr= array.map(function(v) {
+        return parseInt(v, 10);
+    });
+
+    if(arr.length < 10 || Math.max(...arr) > 100 || Math.min(...arr) < 1){
+      document.getElementById("dataFieldError").innerHTML = "Make sure the Data field contains at least ten comma separated values between 1 and 100";
+    }
+    else{
+    document.getElementById("max").innerHTML = "Maximum: " + Math.max(...arr);
+
+    var sum = 0;
+    for(var i = 0; i < arr.length; i++) {
+        sum += arr[i];
+    }
+    var avg = sum / arr.length;
+
+    document.getElementById("avg").innerHTML = "Average: " + avg;
+    document.getElementById("dataFieldError").innerHTML = "";
+      }
+    }
+
+		</script>
+	</head>
+	<body class = "pop-up">
+		<div id= "myModal" class = "modal">
+			<div class = "modal-values">
+				<span style="z-index:100" class = "close" id="closed" onclick="closeModal()">&times;</span>
+				<p id="error_msg">Some text in the dialog box</p>
+			</div>
+		</div>
+
+		<div class="background">
+			<center>
+				<h1>GEORGE MASON UNIVERSITY</h1>
+			</center>
+		</div>
+		<br>
+
+		<span class="heading">
+			<center>
+				<h2>Survey Form</h2>
+			</center>
+		</span>
+		<!-- Survey Form -->
+		<form name="aform" action="" autocomplete="on" onsubmit="return formValidation()" method="post">
+			<div class="title">
+				<label for="Name" id="Label-name">
+				User Name <span style="color:#ff0000">*</span>
+				</label><br>
+				<input type="text" id="name" class="box" name="name" placeholder="Enter your name" autocomplete="on" required autofocus>
+			</div>
+			<div class="title">
+				<label for="Address"Id="Label-address">
+				Address <span style="color:ff0000">*</span>
+				</label><br>
+				<input type="text" id="address" name="address" class="box" placeholder="Enter your address" autocomplete="on" required>
+			</div>
+
+
+			<div class="title">
+				<label for="zipcode" id="Label-zipcode">
+				Zip code<span style="color:ff0000">*</span>
+				</label><br>
+				<input type="text" name="zip" id="zipcode" class= "box" placeholder="Enter your Zipcode" autocomplete="on" required onBlur="zipCode(this.value)" maxlength="5">
+				<label id="zip_error"></label><br><br>
+				<label>City<span style="color:ff0000">*</span> :</label>
+				<span id="city"></span><br><br>
+				<label>State<span style="color:ff0000">*</span> :</label>
+				<span id="state"></span><br>
+			</div>
+			<div class="title">
+				<label for="Phone Number" id="Label-Phone Number">
+				Phone Number<span style="color:ff0000">*</span>
+				</label> <br>
+				<input type="text" name="phonenumber" id="Phone Number" class="box" placeholder="Enter your Number" autocomplete="on" required>
+			</div>
+			<div class="title">
+				<label for="email" id="Label-email">
+				Email<span style="color:ff0000">*</span>
+				</label><br>
+				<input type="text" id="Email" name="email" class="box" placeholder="Enter your Email" autocomplete="on" required>
+			</div>
+			<div class="title">
+				<label for="URL" id="Label-URL">
+				URL<span style="color:ff0000">*</span>
+				</label><br>
+				<input type="text" id="URL" name="url" class="box" placeholder="Enter URL" autocomplete="on" required>
+			</div>
+			<div class="title">
+				<label for="Date" id="Label-Date">
+				Date of Survey<span style="color:ff0000">*</span>
+				</label>
+				<br>
+				<input type="date" id="date" name="date" class="box" placeholder="Enter date" autocomplete="on" required>
+			</div>
+			<!-- Check Boxes -->
+			<div class="title">
+				<label>What do you like the most about the campus?</label><br>
+				<label><input type="checkbox" name="no" value="friends" />students<br/></label>
+				<label><input type="checkbox" name="no" value="location" />location<br/></label>
+				<label><input type="checkbox" name="no" value="campus" />campus<br/></label>
+				<label><input type="checkbox" name="no" value="atmosphere" />atmosphere<br/></label>
+				<label><input type="checkbox" name="no" value="dormrooms" />dorm rooms<br/></label>
+				<label><input type="checkbox" name="no" value="sports" />sports<br/></label>
+			</div>
+
+			<!-- Radio Buttons -->
+			<div class="title">
+				<label>How you became intrested in university?</label><br>
+				<label><input type="radio" name="Num" value="true" > Friends<br></label>
+				<label><input type="radio" name="Num" value="true"> Television<br></label>
+				<label><input type="radio" name="Num" value="true"> Internet<br></label>
+				<label><input type="radio" name="Num" value="true"> Other<br></label>
+				<br>
+			</div>
+			<!-- Text area for addtional comments -->
+			<div class="title">
+				<label>Additional Comments:</label><br>
+				<textarea name="comments" class="box" placeholder="comments"></textarea><br>
+			</div>
+			<!-- Datalist for months -->
+			<div class="title">
+				<label>High school Graduation</label><br>
+				<input list="months" name="month" id="month" class="box" placeholder="enter month">
+				<datalist id="months">
+					<option value="January">
+					<option value="February">
+					<option value="March">
+					<option value="April">
+					<option value="May">
+					<option value="June">
+					<option value="July">
+					<option value="August">
+					<option value="September">
+					<option value="October">
+					<option value="November">
+					<option value="December">
+				</datalist>
+				<br><br>
+				<input type="text" name="year" id="year" class="box" placeholder="Enter year">
+			</div>
+			<!-- Dropdown list -->
+			<div class="title">
+			<label>How likely you recommend this university to your friend?</label><br>
+			<select name="rating" id="rating" class="box">
+			<option value="Very Likely">More Likely</option>
+			<option value="Likely">Likely</option>
+			<option value="UnLikely">UnLikely</option>
+			</select>
+			</div>
+			        <div class="ttile">
+            <label for="data" id="label-data">
+                Data(Enter comma separated values)
+            </label>
+            <input type="text" onfocusout="avgAndmax()"
+                   id="input" placeholder="Enter 10 values"/>
+
+        <p id="dataFieldError"></p><br/>
+        <div id="max">Maximum:</div><br/>
+        <div id="avg">Average:</div>
+      </div><br>
+			<!-- Submit Button  -->
+			<button type="submit" value="submit" onclick="return formValidation()">
+			SUBMIT</button>
+			<button type = "reset">RESET</button>
+		</form>
+
+		<!-- Logo at bottom right of the page -->
+		<span class="logo">
+		<a href="https://cs.gmu.edu/" target="_blank"><img src="logo.png" alt="logo" width="70" height="70"></a>
+		</span>
+		<script type="text/javascript">
+			//functiom to close the JQuery dialog madal window
+			function closeModal() {
+			  document.getElementById("myModal").style.display = "none";
+			}
+		</script>
+	</body>
+</html>
